@@ -11,13 +11,15 @@
 |
 */
 
-Route::get('/', function () {
+/*Route::get('/', function () {
     return view('welcome');
-});
+});*/
 
-Route::get('test', function () {
-    return view('test');
-});
+// Admin routes
+Route::get('/', ['middleware' => 'auth', function() {
+        return view('dashboard');
+}]);
+
 
 Route::auth();
 

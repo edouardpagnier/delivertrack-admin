@@ -1,8 +1,4 @@
-        </div>
-        <!-- /.container-fluid -->
-        <footer class="footer text-center"> 2016 &copy; DeliverTrack </footer>
-    </div>
-<!-- /#page-wrapper -->
+
 </div>
 <!-- ./ Wrapper -->
 

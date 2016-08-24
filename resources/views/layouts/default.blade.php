@@ -4,22 +4,21 @@
     @include('includes.head')
 </head>
 <body>
-<div class="container">
 
-    <header class="row">
-        @include('includes.header')
-    </header>
+    @include('includes.header')
 
-    <div id="main" class="row">
+    <!-- Page Content -->
+    <div id="page-wrapper">
+        <div class="container-fluid">
 
-        @yield('content')
+            @yield('content')
 
+        </div>
+        <!-- /.container-fluid -->
+        <footer class="footer text-center"> 2016 &copy; DeliverTrack </footer>
     </div>
+    <!-- /#page-wrapper -->
+    @include('includes.footer')
 
-    <footer class="row">
-        @include('includes.footer')
-    </footer>
-
-</div>
 </body>
 </html>
