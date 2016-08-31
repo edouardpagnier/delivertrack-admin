@@ -1,4 +1,7 @@
 @extends('layouts.default')
+@section('title')
+    Dashboard
+@stop
 @section('content')
-    <h2>This is a testing page</h2>
+
 @stop

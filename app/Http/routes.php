@@ -11,16 +11,25 @@
 |
 */
 
-/*Route::get('/', function () {
-    return view('welcome');
-});*/
 
-// Admin routes
-Route::get('/', ['middleware' => 'auth', function() {
-        return view('dashboard');
-}]);
+Route::get('/', 'DashboardController@index')->name('dashboard');
+Route::get('/map', 'MapController@index');
+
+Route::get('/my-profile', 'UserController@showMyProfile');
+Route::post('/my-profile', 'UserController@postMyProfile');
+Route::post('/my-profile/change-password', 'UserController@postMyProfileChangePassword');
+
+Route::get('/accounts', 'UserController@showAccounts')->name('accounts');
+Route::get('/accounts/new', 'UserController@showAddUser');
+Route::post('/accounts/new', 'UserController@postAddUser');
+Route::get('/accounts/edit/{user_id}', 'UserController@showEditUser');
+Route::post('/accounts/edit/{user_id}', 'UserController@postEditUser');
+Route::post('/accounts/edit/change-password/{user_id}', 'UserController@postEditUserChangePassword');
+Route::get('/accounts/delete/{user_id}', 'UserController@deleteUser');
+
+Route::get('/drivers', 'DriverController@showDrivers');
+
 
 
 Route::auth();
 
-Route::get('/home', 'HomeController@index');

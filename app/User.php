@@ -23,4 +23,18 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function role()
+    {
+        return $this->belongsTo('App\Role');
+    }
+
+    public function driver(){
+        return $this->hasOne('App\Driver');
+    }
+
+    public function isAdmin()
+    {
+        return $this->role_id == 1 ? true : false;
+    }
 }

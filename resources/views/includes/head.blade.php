@@ -8,6 +8,7 @@
 <title>DeliverTrack</title>
 
 
+<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('images/favicon.png') }}">
 
 <!-- vector map CSS -->
 <!--
@@ -17,6 +18,8 @@
 
 <!-- Bootstrap Core CSS -->
 <link rel="stylesheet" href="{{ asset('bootstrap/dist/css/bootstrap.min.css') }}">
+<!-- DataTable -->
+<link href="{{ url('plugins/bower_components/datatables/jquery.dataTables.min.css') }}" rel="stylesheet" type="text/css">
 <!-- Menu CSS -->
 <link rel="stylesheet" href="{{ asset('plugins/bower_components/sidebar-nav/dist/sidebar-nav.min.css') }}">
 <!-- animation CSS -->
@@ -25,6 +28,14 @@
 <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 <!-- color CSS -->
 <link rel="stylesheet" href="{{ asset('css/colors/blue.css') }}">
-
+<!-- Icons -->
 <link rel="stylesheet" href="{{ asset('css/icons/linea-icons/linea.css') }}">
+<!-- Bootstrap select -->
+<link href="{{ asset('plugins/bower_components/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet" />
+<!--alerts CSS -->
+<link href="{{ url('plugins/bower_components/sweetalert/sweetalert.css') }}" rel="stylesheet" type="text/css">
+
+
+
+
 

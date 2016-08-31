@@ -27,6 +27,9 @@
 <script src="{{ asset('plugins/bower_components/jquery.easy-pie-chart/easy-pie-chart.init.js') }}"></script>
 <!-- Custom Theme JavaScript -->
 <script src="{{ asset('js/custom.js') }}"></script>
-
 <!--Style Switcher -->
 <script src="{{ asset('plugins/bower_components/styleswitcher/jQuery.style.switcher.js') }}"></script>
+
+
+<script src="{{ asset('../plugins/bower_components/bootstrap-select/bootstrap-select.min.js') }}" type="text/javascript"></script>
+
