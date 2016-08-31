@@ -32,14 +32,16 @@
                 </li>
                 <li> <a href="{{ url('/map') }}" class="waves-effect"><i class="fa fa-map-marker fa-lg fa-fw"></i> <span class="hide-menu">Map </span></a>
                 </li>
-                <li> <a href="#" class="waves-effect"><i class="fa fa-shopping-bag fa-lg fa-fw"></i> <span class="hide-menu">Orders <span class="fa arrow"></span> <span class="label label-rouded label-custom pull-right">4</span></span></a>
+                <!--
+                <li> <a href="#" class="waves-effect"><i class="fa fa-shopping-bag fa-lg fa-fw"></i> <span class="hide-menu">Orders <span class="fa arrow"></span></span></a>
                     <ul class="nav nav-second-level">
                         <li> <a href="#">Order list</a> </li>
                         <li> <a href="#">New order</a> </li>
                         <li> <a href="#">History</a> </li>
                     </ul>
                 </li>
-                <li> <a href="{{ url('/drivers') }}" class="waves-effect"><i class="fa fa-truck fa-lg fa-fw"></i> <span class="hide-menu">Drivers </span></a>
+                -->
+                <li> <a href="{{ url('/drivers') }}" class="waves-effect"><i class="fa fa-truck fa-lg fa-fw"></i> <span class="hide-menu">Drivers <span class="label label-rouded driver_status2 pull-right" id="driver_inactive_number"></span><span class="label label-rouded driver_status3 pull-right" id="driver_active_number"></span></span></a>
                 </li>
                 <li class="nav-small-cap">--- Settings</li>
                 <li><a href="{{ url('/my-profile') }}"><i class="ti-user"></i> My Profile</a></li>

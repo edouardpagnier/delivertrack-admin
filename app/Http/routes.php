@@ -28,6 +28,9 @@ Route::post('/accounts/edit/change-password/{user_id}', 'UserController@postEdit
 Route::get('/accounts/delete/{user_id}', 'UserController@deleteUser');
 
 Route::get('/drivers', 'DriverController@showDrivers');
+Route::get('/drivers/active', 'DriverController@getActiveDriversNumber');
+Route::get('/drivers/coordinates', 'DriverController@getDriversCoordinates');
+
 
 
 

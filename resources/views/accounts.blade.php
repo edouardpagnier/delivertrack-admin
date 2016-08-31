@@ -27,7 +27,13 @@
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
                             <td><span class="label user_role{{$user->role_id }}">{{ $user->role->name }}</span></td>
-                            <td>{{ $user->updated_at->format('j M Y - H:i') }}</td>
+                            <td>
+                                @if($user->updated_at != $user->created_at)
+                                    {{ $user->updated_at->format('j M Y - H:i') }}
+                                @else
+                                    -
+                                @endif
+                            </td>
                             <td class="text-nowrap">
                                 <a href="{{ url('/accounts/edit/'.$user->id) }}" data-toggle="tooltip" data-original-title="Edit"> <i class="fa fa-pencil text-inverse m-r-10"></i> </a>
                                 @if($user->id != Auth::id())
@@ -45,13 +51,35 @@
 @section('scripts')
     <script src="{{ url('plugins/bower_components/sweetalert/sweetalert.min.js') }}"></script>
     <script src="{{ url('plugins/bower_components/sweetalert/jquery.sweet-alert.custom.js') }}"></script>
-    <script src="{{ url('js/scripts.js') }}"></script>
     <script src="{{ url('plugins/bower_components/datatables/jquery.dataTables.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             $('#accounts_table').DataTable();
             $('#accounts_table thead th:last-child').addClass('clear_after');
         });
+
+        /*
+         * This function generate a Are you sure ? popup and redirect the Ok button to the user deleting url
+         */
+        function deleteUserAlert(userId){
+
+            swal({
+                title: "Are you sure?",
+                text: "This user will be permanently deleted!",
+                type: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#DD6B55",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel",
+                closeOnConfirm: false,
+                closeOnCancel: true
+            }, function(isConfirm){
+                if (isConfirm) {
+                    document.getElementById('deleteUserLink-'+userId).click();
+
+                }
+            });
+        }
     </script>
 @stop
 

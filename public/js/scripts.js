@@ -5,25 +5,13 @@
  */
 
 
-/*
- * This function generate a Are you sure ? popup and redirect the Ok button to the user deleting url
- */
-function deleteUserAlert(userId){
-
-    swal({
-        title: "Are you sure?",
-        text: "This user will be permanently deleted!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#DD6B55",
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "Cancel",
-        closeOnConfirm: false,
-        closeOnCancel: true
-    }, function(isConfirm){
-        if (isConfirm) {
-            document.getElementById('deleteUserLink-'+userId).click();
-
-        }
-    });
-}
+$(document).ready(function(){
+    // Get number of active drivers to display it in the left sidebar
+    var api_url = site_url+'drivers/active';
+    $.get(api_url, function (data) {
+        //success data
+        //console.log('Active drivers: '+data);
+        $('#driver_active_number').html(data[0]);
+        $('#driver_inactive_number').html(data[1]);
+    })
+});
