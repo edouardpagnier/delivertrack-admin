@@ -78,7 +78,7 @@
                     data: params,
                     dataType: 'json',
                     success: function(data) {
-                        $('#response').html(data.status);
+                        $('#response').html($('#response').html()+'<br />{lat: '+latlng.lat+', lng: '+latlng.lng+'}');
                         setTimeout(function(){
                             updateDriverCoordinate(coords[counter]);
                         }, 5000);
