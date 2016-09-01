@@ -12,6 +12,8 @@
 */
 
 
+// ROUTE WEB
+
 Route::get('/', 'DashboardController@index')->name('dashboard');
 Route::get('/map', 'MapController@index');
 
@@ -31,8 +33,21 @@ Route::get('/drivers', 'DriverController@showDrivers');
 Route::get('/drivers/active', 'DriverController@getActiveDriversNumber');
 Route::get('/drivers/coordinates', 'DriverController@getDriversCoordinates');
 
-
-
-
 Route::auth();
+
+
+// ROUTE API
+
+Route::group(['middleware' => ['api'],'prefix' => 'api/v1'], function () {
+
+   // Route::post('register', 'APIController@register');
+
+    Route::post('login', 'ApiAuthenticateController@login');
+
+    Route::group(['middleware' => 'jwt-auth'], function () {
+
+        Route::put('drivers/coordinates', 'ApiDriverController@updatePosition');
+    });
+
+});
 

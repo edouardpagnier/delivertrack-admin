@@ -1,0 +1,105 @@
+<html>
+    <head>
+        <title>Client test</title>
+    </head>
+    <body>
+        <a id="update_button" style="display: none;" href="javascript:launchTest()">Update coordinate</a>
+        <div id="response"></div>
+
+        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+        <script type="text/javascript">
+
+            var site_url = "http://delivertrack.local/";
+            var api_url = site_url + 'api/v1/';
+            var token = '';
+            var counter = 0;
+
+            var coords = new Array(
+                {'lat': 37.784777, 'lng': -122.436168},
+                {'lat': 37.784669, 'lng': -122.436987},
+                {'lat': 37.784546, 'lng': -122.437976},
+                {'lat': 37.784419, 'lng': -122.438856},
+                {'lat': 37.784326, 'lng': -122.439677},
+                {'lat': 37.785009, 'lng': -122.439811},
+                {'lat': 37.785717, 'lng': -122.439945},
+                {'lat': 37.786438, 'lng': -122.440074},
+                {'lat': 37.787133, 'lng': -122.440213},
+                {'lat': 37.787773, 'lng': -122.440355},
+                {'lat': 37.788489, 'lng': -122.440508},
+                {'lat': 37.789201, 'lng': -122.440653},
+                {'lat': 37.789884, 'lng': -122.440809},
+                {'lat': 37.789986, 'lng': -122.439940},
+                {'lat': 37.790100, 'lng': -122.439055},
+                {'lat': 37.790214, 'lng': -122.438175},
+                {'lat': 37.790333, 'lng': -122.437285},
+                {'lat': 37.790439, 'lng': -122.436389},
+                {'lat': 37.790546, 'lng': -122.435560},
+                {'lat': 37.790665, 'lng': -122.434670},
+                {'lat': 37.790712, 'lng': -122.434219},
+                {'lat': 37.789996, 'lng': -122.434069},
+                {'lat': 37.789280, 'lng': -122.433924},
+                {'lat': 37.788555, 'lng': -122.433785},
+                {'lat': 37.787834, 'lng': -122.433635},
+                {'lat': 37.787122, 'lng': -122.433490},
+                {'lat': 37.786406, 'lng': -122.433356},
+                {'lat': 37.785702, 'lng': -122.433222},
+                {'lat': 37.785168, 'lng': -122.433120},
+                {'lat': 37.785061, 'lng': -122.433933},
+                {'lat': 37.784946, 'lng': -122.434815},
+                {'lat': 37.784823, 'lng': -122.435705}
+            );
+
+            $(document).ready(function(){
+
+                $.ajax({
+                    url: api_url+'login',
+                    dataType: "json",
+                    type: "POST",
+                    data: {"email":"francis@carne.com","password":"azerty"},
+                    success: function (data) {
+                        token = data.token;
+                        $('#update_button').show();
+                    }
+                });
+            });
+
+            function launchTest(){
+                    updateDriverCoordinate(coords[counter]);
+            }
+
+
+            function updateDriverCoordinate(latlng){
+                var params = {'token': token, 'driver_id': 6, 'lat': latlng.lat, 'lng': latlng.lng};
+                //console.log(api_url+'drivers/coordinates');
+                //console.log(params);
+                $.ajax({
+                    url: api_url+'drivers/coordinates',
+                    type: 'PUT',
+                    data: params,
+                    dataType: 'json',
+                    success: function(data) {
+                        $('#response').html(data.status);
+                        setTimeout(function(){
+                            updateDriverCoordinate(coords[counter]);
+                        }, 5000);
+                        if(counter == 31){
+                            counter = 0;
+                        }
+                        else {
+                            counter++;
+                        }
+                    }
+                });
+            }
+
+            function sleep(milliseconds) {
+                var start = new Date().getTime();
+                for (var i = 0; i < 1e7; i++) {
+                    if ((new Date().getTime() - start) > milliseconds){
+                        break;
+                    }
+                }
+            }
+        </script>
+    </body>
+</html>

@@ -9,7 +9,13 @@
     <!-- google maps api -->
     <script src="http://maps.google.com/maps/api/js?key=AIzaSyAU7_RRdFFptH5Mfnx1msjffWF6PUKiUeo"></script>
     <script src="{{ asset('plugins/bower_components/gmaps/gmaps.min.js') }}"></script>
-    <!-- <script src="{{ asset('plugins/bower_components/gmaps/jquery.gmaps.js') }}"></script> -->
+
+    <!-- Libraries for maker animations -->
+    <script src="{{ asset('js/jquery.easing.1.3.js') }}"></script>
+    <!-- we use markerAnimate to actually animate marker -->
+    <script src="{{ asset('js/markerAnimate.js') }}"></script>
+    <!-- SlidingMarker hides details from you - your markers are just animated automagically -->
+    <script src="{{ asset('js/SlidingMarker.min.js') }}"></script>
     <script type="text/javascript">
         $(document).ready(function(){
             // Adjust map height
@@ -17,20 +23,11 @@
 
             var map;
             var markers = [];
+            var infosWindows = new Array();
 
             $('#gmap').height(page_height);
 
-            /*map = new GMaps({
-                el: '#gmap',
-                lat: 37.7768539,
-                lng: -122.4231705,
-                zoom : 13,
-                panControl : false,
-                streetViewControl : false,
-                mapTypeControl: false,
-                overviewMapControl: false
-            });*/
-
+            SlidingMarker.initializeGlobally();
             initialize_map();
             placeDriversOnMap();
 
@@ -53,21 +50,43 @@
                 $.get(api_url, function (data) {
                     //success data
                     data.forEach(function(item, index){
-                        var name = '';
+                        var driver_id = item.id;
+                        var name = item.user.name;
                         var status_id = item.status_id;
+                        var status = item.status.name;
                         var lat = parseFloat(item.current_lat);
                         var lng = parseFloat(item.current_long);
                         var latlng = {lat: lat, lng: lng};
-                        addMarker(latlng, status_id, name);
+                        addMarker(driver_id, latlng, status_id, status, name);
                     });
                 });
+                setTimeout(moveDriversOnMap, 5000);
+            }
 
-                //marker = new google.maps.Marker({position: myLatLng, map: map, icon: image});
-                //marker.setMap(map);
+            function moveDriversOnMap(){
+
+                var api_url = site_url+'drivers/coordinates';
+                //var haightAshbury = {lat: 37.769, lng: -122.446};
+
+                $.get(api_url, function (data) {
+                    //success data
+                    data.forEach(function(item, index){
+                        var driver_id = item.id;
+                        //var name = item.user.name;
+                        //var status_id = item.status_id;
+                        //var status = item.status.name;
+                        var lat = parseFloat(item.current_lat);
+                        var lng = parseFloat(item.current_long);
+                        var latlng = {lat: lat, lng: lng};
+                        //addMarker(latlng, status_id, status, name);
+                        markers[driver_id].setPosition(latlng);
+                    });
+                });
+                setTimeout(moveDriversOnMap, 5000);
             }
 
             // Adds a marker to the map and push to the array.
-            function addMarker(location, status_id, name) {
+            function addMarker(driver_id, location, status_id, status, name) {
                 if(status_id == 3){
                     var icon = "{{ asset('images/driver_map_icon.png') }}";
                 }
@@ -77,21 +96,31 @@
                 var marker = new google.maps.Marker({
                     position: location,
                     map: map,
-                    icon: icon
+                    icon: icon,
+                    duration: 5000,
+                    easing: "linear"
                 });
-                markers.push(marker);
+                //marker.setDuration(5000);
+
+                markers[driver_id] = marker;
                 // add info window
-                var content = name;
+                var content = '<span class="map_driver_name">'+name+'</span><br /><span class="label driver_status'+status_id+'">'+status+'</span>';
                 var infowindow = new google.maps.InfoWindow({
                     content: content
                 });
                 marker.addListener('click', function() {
+                    closeInfoWindows();
+                    infosWindows.push(infowindow);
                     infowindow.open(map, marker);
                 });
             }
 
-            // create info window content
-            //function
+            // Close all infowindows
+            function closeInfoWindows(){
+                for (var i = 0; i < infosWindows.length; i++) {
+                    infosWindows[i].close();
+                }
+            }
 
             // Sets the map on all markers in the array.
             function setMapOnAll(map) {
