@@ -35,7 +35,7 @@
 
         </div>
         <!-- /.container-fluid -->
-        <footer class="footer text-center"> 2016 &copy; DeliverTrack </footer>
+        <footer class="footer text-center"> &copy; 2016 DeliverTrack </footer>
     </div>
     <!-- /#page-wrapper -->
     @include('includes.footer')

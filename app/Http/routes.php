@@ -30,6 +30,7 @@ Route::post('/accounts/edit/change-password/{user_id}', 'UserController@postEdit
 Route::get('/accounts/delete/{user_id}', 'UserController@deleteUser');
 
 Route::get('/drivers', 'DriverController@showDrivers');
+Route::get('/drivers/details', 'DriverController@getDrivers');
 Route::get('/drivers/active', 'DriverController@getActiveDriversNumber');
 Route::get('/drivers/coordinates', 'DriverController@getDriversCoordinates');
 
@@ -47,6 +48,8 @@ Route::group(['middleware' => ['api'],'prefix' => 'api/v1'], function () {
     Route::group(['middleware' => 'jwt-auth'], function () {
 
         Route::put('drivers/coordinates', 'ApiDriverController@updatePosition');
+        Route::put('drivers/status', 'ApiDriverController@updateStatus');
+        Route::put('drivers/logout', 'ApiDriverController@logout');
     });
 
 });

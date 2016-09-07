@@ -3,7 +3,24 @@
         <title>Client test</title>
     </head>
     <body>
-        <a id="update_button" style="display: none;" href="javascript:launchTest()">Update coordinate</a>
+        <label for="email">Email:</label>
+        <input type="text" id="email" />
+        <br /><br />
+        <label for="password">Password:</label>
+        <input type="password" id="password" />
+        <br /><br />
+        <input type="button" value="Login" id="btn_login" />
+
+        <br /><br />
+
+        <div id="login_response"></div>
+
+        <div id="action_buttons" style="display: none;">
+            <input type="button" id="btn_move" style="display: none;" value="Move !" />
+            <input type="button" id="btn_toogle_mission" value="Take mission" />
+            <input type="button" id="btn_logout" value="Logout" />
+        </div>
+
         <div id="response"></div>
 
         <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
@@ -13,6 +30,8 @@
             var api_url = site_url + 'api/v1/';
             var token = '';
             var counter = 0;
+            var is_moving = false;
+            var initial_latlng = {'lat': 37.784823, 'lng': -122.435705};
 
             var coords = new Array(
                 {'lat': 37.784777, 'lng': -122.436168},
@@ -51,25 +70,115 @@
 
             $(document).ready(function(){
 
+                $('#btn_login').click(function(){
+
+                    var email = $('#email').val();
+                    var password = $('#password').val();
+                    login(email, password);
+                });
+
+                $('#btn_move').click(function(){
+                    if(is_moving){
+                        is_moving = false;
+                        $('#btn_move').val('Move !');
+                    }else{
+                        is_moving = true;
+                        $('#btn_move').val('Stop !');
+                        launchTest();
+                    }
+                });
+
+                $('#btn_toogle_mission').click(function(){
+                    if($(this).val() == "Take mission"){
+                        $(this).val("Finish mission");
+                        updateDriverStatus(3);
+                        $('#btn_move').show();
+                    }else{
+                        $(this).val("Take mission");
+                        updateDriverStatus(2);
+                        $('#btn_move').hide();
+                    }
+                });
+
+                $('#btn_logout').click(function(){
+                    logout();
+                });
+
+            });
+
+            /*
+             * login function allow driver get an api token
+             * params: email, password
+             */
+            function login(email, password){
                 $.ajax({
                     url: api_url+'login',
                     dataType: "json",
                     type: "POST",
-                    data: {"email":"francis@carne.com","password":"azerty"},
+                    data: {"email": email,"password": password},
                     success: function (data) {
                         token = data.token;
-                        $('#update_button').show();
+                        if (typeof token != 'undefined'){
+                            updateDriverCoordinate(initial_latlng);
+                            $('#login_response').html('SUCCESS');
+                            $('#action_buttons').show();
+                        }
+                        else{
+                            $('#login_response').html('AUTH FAILED - '+data.result);
+                        }
                     }
                 });
-            });
+            }
 
+            /*
+             * logout function invalid the api token
+             *
+             */
+            function logout(){
+                var params = {'token': token};
+                $.ajax({
+                    url: api_url+'drivers/logout',
+                    dataType: "json",
+                    type: "PUT",
+                    data: params,
+                    success: function (data) {
+                        $('#login_response').html('');
+                        $('#action_buttons').hide();
+                    }
+                });
+            }
+
+            /*
+             * updateDriverStatus function allow driver to update their status
+             * params: status
+             */
+            function updateDriverStatus(status_id) {
+                var params = {'token': token, 'status_id': status_id};
+                $.ajax({
+                    url: api_url+'drivers/status',
+                    dataType: "json",
+                    type: "PUT",
+                    data: params,
+                    success: function (data) {
+                        //
+                    }
+                });
+            }
+
+            /*
+             * launchTest function simulate a moving driver for testing
+             * params:
+             */
             function launchTest(){
                     updateDriverCoordinate(coords[counter]);
             }
 
-
+            /*
+             * updateDriverCoordinate function allow driver to update his position
+             * params: latlng object {'lat': x.xx, 'lng': y.yy}
+             */
             function updateDriverCoordinate(latlng){
-                var params = {'token': token, 'driver_id': 6, 'lat': latlng.lat, 'lng': latlng.lng};
+                var params = {'token': token, 'lat': latlng.lat, 'lng': latlng.lng};
                 //console.log(api_url+'drivers/coordinates');
                 //console.log(params);
                 $.ajax({
@@ -79,10 +188,12 @@
                     dataType: 'json',
                     success: function(data) {
                         $('#response').html($('#response').html()+'<br />{lat: '+latlng.lat+', lng: '+latlng.lng+'}');
-                        setTimeout(function(){
-                            updateDriverCoordinate(coords[counter]);
-                        }, 5000);
-                        if(counter == 31){
+                        if(is_moving) {
+                            setTimeout(function () {
+                                updateDriverCoordinate(coords[counter]);
+                            }, 5000);
+                        }
+                        if(counter == coords.length-1){
                             counter = 0;
                         }
                         else {
@@ -90,15 +201,6 @@
                         }
                     }
                 });
-            }
-
-            function sleep(milliseconds) {
-                var start = new Date().getTime();
-                for (var i = 0; i < 1e7; i++) {
-                    if ((new Date().getTime() - start) > milliseconds){
-                        break;
-                    }
-                }
             }
         </script>
     </body>

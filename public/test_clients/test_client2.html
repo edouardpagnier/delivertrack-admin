@@ -1,106 +1,208 @@
 <html>
-    <head>
-        <title>Client test</title>
-    </head>
-    <body>
-        <a id="update_button" style="display: none;" href="javascript:launchTest()">Update coordinate</a>
-        <div id="response"></div>
+<head>
+    <title>Client test</title>
+</head>
+<body>
+<label for="email">Email:</label>
+<input type="text" id="email" />
+<br /><br />
+<label for="password">Password:</label>
+<input type="password" id="password" />
+<br /><br />
+<input type="button" value="Login" id="btn_login" />
 
-        <script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-        <script type="text/javascript">
+<br /><br />
 
-            var site_url = "http://delivertrack.local/";
-            var api_url = site_url + 'api/v1/';
-            var token = '';
-            var counter = 0;
+<div id="login_response"></div>
 
-            var coords = new Array(
-                    {'lat': 37.805178, 'lng': -122.417281},
-                    {'lat': 37.804720, 'lng': -122.416610},
-                    {'lat': 37.804241, 'lng': -122.415923},
-                    {'lat': 37.803766, 'lng': -122.415252},
-                    {'lat': 37.803296, 'lng': -122.414560},
-                    {'lat': 37.802830, 'lng': -122.413868},
-                    {'lat': 37.802364, 'lng': -122.413160},
-                    {'lat': 37.801868, 'lng': -122.412500},
-                    {'lat': 37.801381, 'lng': -122.411808},
-                    {'lat': 37.800885, 'lng': -122.411111},
-                    {'lat': 37.800410, 'lng': -122.410419},
-                    {'lat': 37.799927, 'lng': -122.409716},
-                    {'lat': 37.799473, 'lng': -122.409013},
-                    {'lat': 37.799621, 'lng': -122.408139},
-                    {'lat': 37.799718, 'lng': -122.407420},
-                    {'lat': 37.800430, 'lng': -122.407559},
-                    {'lat': 37.801138, 'lng': -122.407704},
-                    {'lat': 37.801863, 'lng': -122.407849},
-                    {'lat': 37.802562, 'lng': -122.407994},
-                    {'lat': 37.803266, 'lng': -122.408139},
-                    {'lat': 37.803974, 'lng': -122.408284},
-                    {'lat': 37.804682, 'lng': -122.408429},
-                    {'lat': 37.805309, 'lng': -122.408568},
-                    {'lat': 37.805199, 'lng': -122.409458},
-                    {'lat': 37.805085, 'lng': -122.410348},
-                    {'lat': 37.805000, 'lng': -122.411153},
-                    {'lat': 37.804911, 'lng': -122.411786},
-                    {'lat': 37.805831, 'lng': -122.411984},
-                    {'lat': 37.805734, 'lng': -122.412848},
-                    {'lat': 37.805615, 'lng': -122.413728},
-                    {'lat': 37.805505, 'lng': -122.414608},
-                    {'lat': 37.805403, 'lng': -122.415493},
-                    {'lat': 37.805301, 'lng': -122.416373}
-            );
+<div id="action_buttons" style="display: none;">
+    <input type="button" id="btn_move" style="display: none;" value="Move !" />
+    <input type="button" id="btn_toogle_mission" value="Take mission" />
+    <input type="button" id="btn_logout" value="Logout" />
+</div>
 
-            $(document).ready(function(){
+<div id="response"></div>
 
-                $.ajax({
-                    url: api_url+'login',
-                    dataType: "json",
-                    type: "POST",
-                    data: {"email":"francis@carne.com","password":"azerty"},
-                    success: function (data) {
-                        token = data.token;
-                        $('#update_button').show();
-                    }
-                });
-            });
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<script type="text/javascript">
 
-            function launchTest(){
-                    updateDriverCoordinate(coords[counter]);
+    var site_url = "http://delivertrack.local/";
+    var api_url = site_url + 'api/v1/';
+    var token = '';
+    var counter = 0;
+    var is_moving = false;
+    var initial_latlng = {'lat': 37.805301, 'lng': -122.416373};
+
+    var coords = new Array(
+            {'lat': 37.805178, 'lng': -122.417281},
+            {'lat': 37.804720, 'lng': -122.416610},
+            {'lat': 37.804241, 'lng': -122.415923},
+            {'lat': 37.803766, 'lng': -122.415252},
+            {'lat': 37.803296, 'lng': -122.414560},
+            {'lat': 37.802830, 'lng': -122.413868},
+            {'lat': 37.802364, 'lng': -122.413160},
+            {'lat': 37.801868, 'lng': -122.412500},
+            {'lat': 37.801381, 'lng': -122.411808},
+            {'lat': 37.800885, 'lng': -122.411111},
+            {'lat': 37.800410, 'lng': -122.410419},
+            {'lat': 37.799927, 'lng': -122.409716},
+            {'lat': 37.799473, 'lng': -122.409013},
+            {'lat': 37.799621, 'lng': -122.408139},
+            {'lat': 37.799718, 'lng': -122.407420},
+            {'lat': 37.800430, 'lng': -122.407559},
+            {'lat': 37.801138, 'lng': -122.407704},
+            {'lat': 37.801863, 'lng': -122.407849},
+            {'lat': 37.802562, 'lng': -122.407994},
+            {'lat': 37.803266, 'lng': -122.408139},
+            {'lat': 37.803974, 'lng': -122.408284},
+            {'lat': 37.804682, 'lng': -122.408429},
+            {'lat': 37.805309, 'lng': -122.408568},
+            {'lat': 37.805199, 'lng': -122.409458},
+            {'lat': 37.805085, 'lng': -122.410348},
+            {'lat': 37.805000, 'lng': -122.411153},
+            {'lat': 37.804911, 'lng': -122.411786},
+            {'lat': 37.805831, 'lng': -122.411984},
+            {'lat': 37.805734, 'lng': -122.412848},
+            {'lat': 37.805615, 'lng': -122.413728},
+            {'lat': 37.805505, 'lng': -122.414608},
+            {'lat': 37.805403, 'lng': -122.415493},
+            {'lat': 37.805301, 'lng': -122.416373}
+    );
+
+    $(document).ready(function(){
+
+        $('#btn_login').click(function(){
+
+            var email = $('#email').val();
+            var password = $('#password').val();
+            login(email, password);
+        });
+
+        $('#btn_move').click(function(){
+            if(is_moving){
+                is_moving = false;
+                $('#btn_move').val('Move !');
+            }else{
+                is_moving = true;
+                $('#btn_move').val('Stop !');
+                launchTest();
             }
+        });
 
-
-            function updateDriverCoordinate(latlng){
-                var params = {'token': token, 'driver_id': 5, 'lat': latlng.lat, 'lng': latlng.lng};
-                //console.log(api_url+'drivers/coordinates');
-                //console.log(params);
-                $.ajax({
-                    url: api_url+'drivers/coordinates',
-                    type: 'PUT',
-                    data: params,
-                    dataType: 'json',
-                    success: function(data) {
-                        $('#response').html($('#response').html()+'<br />{lat: '+latlng.lat+', lng: '+latlng.lng+'}');
-                        setTimeout(function(){
-                            updateDriverCoordinate(coords[counter]);
-                        }, 5000);
-                        if(counter == 32){
-                            counter = 0;
-                        }
-                        else {
-                            counter++;
-                        }
-                    }
-                });
+        $('#btn_toogle_mission').click(function(){
+            if($(this).val() == "Take mission"){
+                $(this).val("Finish mission");
+                updateDriverStatus(3);
+                $('#btn_move').show();
+            }else{
+                $(this).val("Take mission");
+                updateDriverStatus(2);
+                $('#btn_move').hide();
             }
+        });
 
-            function sleep(milliseconds) {
-                var start = new Date().getTime();
-                for (var i = 0; i < 1e7; i++) {
-                    if ((new Date().getTime() - start) > milliseconds){
-                        break;
-                    }
+        $('#btn_logout').click(function(){
+            logout();
+        });
+
+    });
+
+    /*
+     * login function allow driver get an api token
+     * params: email, password
+     */
+    function login(email, password){
+        $.ajax({
+            url: api_url+'login',
+            dataType: "json",
+            type: "POST",
+            data: {"email": email,"password": password},
+            success: function (data) {
+                token = data.token;
+                if (typeof token != 'undefined'){
+                    updateDriverCoordinate(initial_latlng);
+                    $('#login_response').html('SUCCESS');
+                    $('#action_buttons').show();
+                }
+                else{
+                    $('#login_response').html('AUTH FAILED - '+data.result);
                 }
             }
-        </script>
-    </body>
+        });
+    }
+
+    /*
+     * logout function invalid the api token
+     *
+     */
+    function logout(){
+        var params = {'token': token};
+        $.ajax({
+            url: api_url+'drivers/logout',
+            dataType: "json",
+            type: "PUT",
+            data: params,
+            success: function (data) {
+                $('#login_response').html('');
+                $('#action_buttons').hide();
+            }
+        });
+    }
+
+    /*
+     * updateDriverStatus function allow driver to update their status
+     * params: status
+     */
+    function updateDriverStatus(status_id) {
+        var params = {'token': token, 'status_id': status_id};
+        $.ajax({
+            url: api_url+'drivers/status',
+            dataType: "json",
+            type: "PUT",
+            data: params,
+            success: function (data) {
+                //
+            }
+        });
+    }
+
+    /*
+     * launchTest function simulate a moving driver for testing
+     * params:
+     */
+    function launchTest(){
+        updateDriverCoordinate(coords[counter]);
+    }
+
+    /*
+     * updateDriverCoordinate function allow driver to update his position
+     * params: latlng object {'lat': x.xx, 'lng': y.yy}
+     */
+    function updateDriverCoordinate(latlng){
+        var params = {'token': token, 'lat': latlng.lat, 'lng': latlng.lng};
+        //console.log(api_url+'drivers/coordinates');
+        //console.log(params);
+        $.ajax({
+            url: api_url+'drivers/coordinates',
+            type: 'PUT',
+            data: params,
+            dataType: 'json',
+            success: function(data) {
+                $('#response').html($('#response').html()+'<br />{lat: '+latlng.lat+', lng: '+latlng.lng+'}');
+                if(is_moving) {
+                    setTimeout(function () {
+                        updateDriverCoordinate(coords[counter]);
+                    }, 5000);
+                }
+                if(counter == coords.length-1){
+                    counter = 0;
+                }
+                else {
+                    counter++;
+                }
+            }
+        });
+    }
+</script>
+</body>
 </html>
